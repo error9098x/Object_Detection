@@ -1,0 +1,8 @@
+streamlit
+ultralytics
+numpy
+pytube
+Flask
+Flask-Cors
+numpy
+opencv-python-headless
