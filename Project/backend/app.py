@@ -11,8 +11,7 @@ import base64
 import json
 
 app = Flask(__name__)
-CORS(app)  
-
+CORS(app, resources={r"/*": {"origins": "http://localhost:80 http://localhost:33455 http:localhost:5000"}})
 model = YOLO('yolov8n.pt')
 
 def frame_to_base64(frame):
@@ -166,5 +165,5 @@ def process_image():
 #     app.run(debug=True, threaded=True)
 
 
-if __name__ == "__main__":
-    app.run(debug=True, threaded=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
