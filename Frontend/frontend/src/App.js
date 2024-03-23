@@ -8,8 +8,8 @@ const App = () => {
 
   const renderUploadComponent = () => {
     switch (selectedOption) {
-      case 'video':
-        return <VideoUpload />;
+      // case 'video':
+      //   return <VideoUpload />;
       case 'image':
         return <ImageUpload />;
       case 'youtube':
@@ -34,10 +34,10 @@ const App = () => {
               <p className="text-gray-600">Choose one of the following options to upload your media:</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
               <button className="bg-indigo-100 rounded-lg p-6 flex flex-col items-center justify-center" onClick={() => setSelectedOption('video')}>
                 <p className="text-gray-600 mt-4">Upload video from your device</p>
-              </button>
+              </button> 
 
               <button className="bg-green-100 rounded-lg p-6 flex flex-col items-center justify-center" onClick={() => setSelectedOption('image')}>
                 <p className="text-gray-600 mt-4">Upload image from your device</p>

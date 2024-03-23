@@ -1,21 +1,42 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const YouTubeVideoUpload = () => {
-  const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [youtubeUrl, setYoutubeUrl] = useState("");
   const [confidenceThreshold, setConfidenceThreshold] = useState(0.5);
   const [frames, setFrames] = useState([]);
 
+  useEffect(() => {
+    const eventSource = new EventSource("http://localhost:5000/process_youtube_video");
+    eventSource.onmessage = (event) => {
+      if (event.data === "done") {
+        eventSource.close();
+      } else {
+        setFrames((prevFrames) => [...prevFrames, event.data]);
+      }
+    };
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+
   const handleYouTubeVideoUpload = async (e) => {
     e.preventDefault();
+
+    if (!youtubeUrl) {
+      console.error('Please provide a YouTube video URL.');
+      return;
+    }
     try {
       const response = await axios.post('http://localhost:5000/process_youtube_video', {
         youtube_url: youtubeUrl,
         confidence_threshold: confidenceThreshold,
       });
-      setFrames(response.data);
+      // Assuming the server sends back an array of base64 strings
+      setFrames(response.data.frames || []);
     } catch (error) {
       console.error('Error processing YouTube video:', error);
+      setFrames([]); // Clear frames in case of error
     }
   };
 
@@ -34,7 +55,7 @@ const YouTubeVideoUpload = () => {
           type="number"
           step="0.1"
           value={confidenceThreshold}
-          onChange={(e) => setConfidenceThreshold(e.target.value)}
+          onChange={(e) => setConfidenceThreshold(parseFloat(e.target.value))}
           className="mb-4 border border-gray-300 rounded p-2"
         />
         <button
@@ -49,7 +70,7 @@ const YouTubeVideoUpload = () => {
           <img
             key={index}
             src={`data:image/jpeg;base64,${frame}`}
-            alt={`Frame ${index}`}
+            alt={`Processed frame ${index}`}
             className="mb-4"
           />
         ))}
