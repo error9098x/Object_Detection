@@ -11,7 +11,7 @@ import base64
 import json
 
 app = Flask(__name__)
-CORS(app)  # You might need to configure this for correct CORS behavior in production
+CORS(app)  
 
 model = YOLO('yolov8n.pt')
 
