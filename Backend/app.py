@@ -56,14 +56,19 @@ def process_image():
     image_file = request.files['image']
     confidence_threshold = float(request.form['confidence_threshold'])
 
-    img = cv2.imdecode(np.frombuffer(image_file.read(), np.uint8), -1)
+    # Decode the image
+    img = cv2.imdecode(np.frombuffer(image_file.read(), np.uint8), cv2.IMREAD_COLOR)  # Forcefully read as a 3-channel image
     img = cv2.resize(img, (640, 480))  # Reduce image resolution
+
+    # Pass the image to the YOLO model
     results = model.track(img, conf=confidence_threshold)
     img_ = results[0].plot()
 
-    # Convert image to base64 and return
-    img_base64 = frame_to_base64(img_)
-    return jsonify(img_base64)
+    # Convert the processed image to base64 string for JSON response
+    _, encoded_image = cv2.imencode('.jpg', img_)
+    base64_image = base64.b64encode(encoded_image.tostring()).decode('utf-8')
+
+    return jsonify({'image': base64_image})
 
 @app.route('/process_youtube_video', methods=['POST'])
 def process_youtube_video():
