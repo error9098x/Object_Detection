@@ -8,8 +8,8 @@ const App = () => {
 
   const renderUploadComponent = () => {
     switch (selectedOption) {
-      // case 'video':
-      //   return <VideoUpload />;
+      case 'video':
+        return <VideoUpload />;
       case 'image':
         return <ImageUpload />;
       case 'youtube':
